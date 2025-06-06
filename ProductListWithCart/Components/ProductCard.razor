@@ -1,0 +1,48 @@
+﻿<div class="product-card">
+        @if (_quantity == 0)
+        {
+            <div class="control-container" style="border: 3px solid var(--white)">
+                <img src="./assets/chicken.png" alt="apple"/>
+                <button @onclick="Increment" class="add-to-cart">
+                    <span class="material-symbols-outlined"> shopping_cart </span
+                    >Add to Cart
+                </button>
+            </div>
+        }
+        else
+        {
+        <div class="control-container" style="border: 3px solid var(--main-color)">
+            <img src="./assets/chicken.png" alt="apple"/>
+            <div class="quantity-control">
+                <button @onclick="Decrement" class="quantity-button minus">-</button>
+                <span class="quantity-display">@_quantity</span>
+                <button @onclick="Increment" class="quantity-button plus">+</button>
+            </div>
+        </div>
+        }
+    
+
+    <div class="details-container">
+        <span class="product-name">Eggs</span>
+        <span class="product-price">$2.99</span>
+    </div>
+</div>
+
+@code {
+    int _quantity;
+    
+
+    private void Increment()
+    {
+        _quantity++;
+    }
+
+    private void Decrement()
+    {
+        if (_quantity != 0)
+        {
+            _quantity--;
+        }
+    }
+
+}
