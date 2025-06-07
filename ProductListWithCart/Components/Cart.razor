@@ -1,44 +1,49 @@
-﻿<div class="cart-container">
-    <div class="cart-content">
-        <h2>Your Cart (4)</h2>
-        <div class="cart-product-card">
-            <img src="assets/chicken.png" alt="chicken"/>
-            <div class="cart-product-details-container">
-                <span class="product-name">Eggs</span>
-                <span class="cart-product-price">1 x $2.99</span>
+﻿@* @using ProductListWithCart.Data *@
+@using ProductListWithCart.Services
+@inject CartService CartService
+@implements IDisposable
+
+<div class="cart-container">
+    @if (CartService.ProductsInCart.Count == 0)
+    {
+        <div class="cart-content">
+            <h2>Your Cart</h2>
+        </div>
+    }
+    else
+    {
+        <div class="cart-content">
+            <h2>Your Cart @CartService.TotalCartItems</h2>
+            @foreach (var product in CartService.ProductsInCart)
+            {
+                <CartProductCard Product="@product.Key" Quantity="@product.Value"/>
+            }
+            <div class="total-container">
+                <span class="total">Total</span>
+                <span class="total-amount">$@CartService.CartTotal.ToString("F2")</span>
+            </div>
+            <div class="checkout-container">
+                <button class="checkout-button" @onclick="CheckOut">Check out</button>
             </div>
         </div>
-        <div class="cart-product-card">
-            <img src="assets/chicken.png" alt="chicken"/>
-            <div class="cart-product-details-container">
-                <span class="product-name">Eggs</span>
-                <span class="cart-product-price">1 x $2.99</span>
-            </div>
-        </div>
-        <div class="cart-product-card">
-            <img src="assets/chicken.png" alt="chicken"/>
-            <div class="cart-product-details-container">
-                <span class="product-name">Eggs</span>
-                <span class="cart-product-price">1 x $2.99</span>
-            </div>
-        </div>
-        <div class="cart-product-card">
-            <img src="assets/chicken.png" alt="chicken"/>
-            <div class="cart-product-details-container">
-                <span class="product-name">Eggs</span>
-                <span class="cart-product-price">1 x $2.99</span>
-            </div>
-        </div>
-        <div class="total-container">
-            <span class="total">Total</span>
-            <span class="total-amount">$43.02</span>
-        </div>
-        <div class="checkout-container">
-            <button class="checkout-button">Check out</button>
-        </div>
-    </div>
+    }
 </div>
 
 @code {
-    
+
+    protected override void OnInitialized()
+    {
+        CartService.OnCartChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        CartService.OnCartChange -= StateHasChanged;
+    }
+
+    private void CheckOut()
+    {
+        CartService.CheckOut();
+    }
+
 }

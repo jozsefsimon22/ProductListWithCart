@@ -1,0 +1,16 @@
+@using ProductListWithCart.Models
+
+
+<div class="cart-product-card">
+    <img src="assets/@Product.ImageLink" alt="@Product.Name"/>
+    <div class="cart-product-details-container">
+        <span class="product-name">@Product.Name</span>
+        <span class="cart-product-price">@Quantity x $@Product.Price</span>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Product Product { get; set; } = new ();
+    [Parameter] public int Quantity { get; set; }
+
+}

@@ -1,8 +1,13 @@
-﻿<div class="product-card">
+﻿@using ProductListWithCart.Data
+@using ProductListWithCart.Models
+@inject Services.CartService CartService
+@implements IDisposable
+
+<div class="product-card">
         @if (_quantity == 0)
         {
             <div class="control-container" style="border: 3px solid var(--white)">
-                <img src="./assets/chicken.png" alt="apple"/>
+                <img src="./assets/@Product.ImageLink" alt="@Product.Name"/>
                 <button @onclick="Increment" class="add-to-cart">
                     <span class="material-symbols-outlined"> shopping_cart </span
                     >Add to Cart
@@ -12,7 +17,7 @@
         else
         {
         <div class="control-container" style="border: 3px solid var(--main-color)">
-            <img src="./assets/chicken.png" alt="apple"/>
+            <img src="./assets/@Product.ImageLink" alt="@Product.Name"/>
             <div class="quantity-control">
                 <button @onclick="Decrement" class="quantity-button minus">-</button>
                 <span class="quantity-display">@_quantity</span>
@@ -23,26 +28,42 @@
     
 
     <div class="details-container">
-        <span class="product-name">Eggs</span>
-        <span class="product-price">$2.99</span>
+        <span class="product-name">@Product.Name</span>
+        <span class="product-price">$@Product.Price</span>
     </div>
 </div>
 
 @code {
-    int _quantity;
+    [Parameter] public Product Product { get; set; } = new ();
+    private int _quantity;
+
+    protected override void OnInitialized()
+    {
+        CartService.ProductsInCart.TryGetValue(Product, out _quantity);
+        CartService.OnCartChange += UpdateQuantityOnStateChange;
+    }
     
+    private void UpdateQuantityOnStateChange()
+    {
+        CartService.ProductsInCart.TryGetValue(Product, out _quantity);
+        StateHasChanged();
+    }
 
     private void Increment()
     {
         _quantity++;
+        CartService.Increment(Product);
     }
 
     private void Decrement()
     {
-        if (_quantity != 0)
-        {
-            _quantity--;
-        }
+        if (_quantity == 0) return;
+        _quantity--;
+        CartService.Decrement(Product);
     }
 
+    public void Dispose()
+    {
+        CartService.OnCartChange -= StateHasChanged;
+    }
 }

@@ -1,14 +1,26 @@
 ﻿@page "/"
 @using ProductListWithCart.Components
+@using ProductListWithCart.Data
+@using ProductListWithCart.Models
 
 <div class="container">
   <div class="content">
     <div class="product-container">
       <h1>Shopping</h1>
       <div class="product-grid">
-        <ProductCard/>
+        @foreach (var product in DataRepository.Products)
+        {
+          <ProductCard Product="@product"/>
+        }
       </div>
     </div>
     <Cart/>
   </div>
 </div>
+<div class="container-mobile">
+  <h1>Please open the page on a bigger screen. Such us Laptop or Computer.</h1>
+</div>
+
+@code
+{
+}
